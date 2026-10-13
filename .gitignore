@@ -1,0 +1,55 @@
+# Env & secrets
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Cursor / assistants
+.cursor/
+.cursorrules
+.cursorignore
+AGENTS.md
+.claude/
+.github/copilot-instructions.md
+
+# Dependencies
+node_modules/
+vendor/
+
+# Builds / caches
+dist/
+build/
+var/
+public/build/
+.phpunit.result.cache
+coverage/
+*.log
+
+# Docker volumes / local data
+docker/data/
+postgres-data/
+
+# Symfony
+/api/var/
+/api/vendor/
+/api/.env.local
+/api/.env.*.local
+
+# React / Vite
+/web/dist/
+/web/node_modules/
+/web/.env.local
+
+# Certs / keys
+*.pem
+*.key
+jwt/
+!jwt/.gitkeep
