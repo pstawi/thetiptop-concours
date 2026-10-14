@@ -196,6 +196,30 @@ $body = @{
 Invoke-RestMethod -Method Post -Uri http://127.0.0.1:8000/api/v1/auth/oauth/mock -ContentType "application/json" -Body $body
 ```
 
+### 9. Parcours participant (étape 5)
+
+API :
+
+| Méthode | Chemin | Auth |
+| --- | --- | --- |
+| GET | `/api/v1/contest` | public |
+| POST | `/api/v1/codes/redeem` | `ROLE_USER` |
+| GET | `/api/v1/me/participations` | JWT |
+
+Passer en phase OPEN (local) :
+
+```powershell
+cd api
+php bin/console app:contest:set-status OPEN
+```
+
+Front React : `/`, `/login`, `/register`, `/jouer`, `/gains`, `/profil`, `/oauth/callback`.
+
+```powershell
+cd web
+npm run dev
+```
+
 ## Statut
 
-Étape 4 — OAuth Google/Facebook (réel si clés) + mock local.
+Étape 5 — concours participant (contest, redeem, historique) + front.

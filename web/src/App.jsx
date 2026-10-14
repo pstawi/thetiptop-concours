@@ -1,65 +1,71 @@
-import { useEffect, useState } from 'react'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { AuthProvider } from './AuthContext'
+import Layout from './components/Layout'
+import GainsPage from './pages/GainsPage'
+import HomePage from './pages/HomePage'
+import LegalPage from './pages/LegalPage'
+import LoginPage from './pages/LoginPage'
+import OAuthCallbackPage from './pages/OAuthCallbackPage'
+import PlayPage from './pages/PlayPage'
+import ProfilePage from './pages/ProfilePage'
+import RegisterPage from './pages/RegisterPage'
 import './App.css'
 
-const API_BASE =
-  import.meta.env.VITE_API_BASE_URL ?? 'http://127.0.0.1:8000/api/v1'
-
-function App() {
-  const [health, setHealth] = useState({ status: 'loading', detail: null })
-
-  useEffect(() => {
-    let cancelled = false
-
-    fetch(`${API_BASE}/health`)
-      .then(async (response) => {
-        const body = await response.json().catch(() => null)
-        if (cancelled) {
-          return
-        }
-        if (!response.ok) {
-          setHealth({ status: 'error', detail: `HTTP ${response.status}` })
-          return
-        }
-        setHealth({ status: 'ok', detail: body })
-      })
-      .catch((error) => {
-        if (!cancelled) {
-          setHealth({ status: 'error', detail: error.message })
-        }
-      })
-
-    return () => {
-      cancelled = true
-    }
-  }, [])
-
+export default function App() {
   return (
-    <main className="page">
-      <p className="brand">Thé Tip Top</p>
-      <h1>Jeu-concours</h1>
-      <p className="lead">
-        Socle local — front React (Vite) connecté à l&apos;API Symfony.
-      </p>
-      <section className="health" aria-live="polite">
-        <h2>API health</h2>
-        {health.status === 'loading' && <p>Vérification en cours…</p>}
-        {health.status === 'ok' && (
-          <p className="ok">
-            Connecté — {health.detail?.service} ({health.detail?.version})
-          </p>
-        )}
-        {health.status === 'error' && (
-          <p className="ko">
-            API injoignable ({String(health.detail)}). Lancez Symfony sur le port
-            8000.
-          </p>
-        )}
-      </section>
-      <footer>
-        Projet étudiant fictif — Furious Ducks / Thé Tip Top
-      </footer>
-    </main>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route index element={<HomePage />} />
+            <Route path="login" element={<LoginPage />} />
+            <Route path="register" element={<RegisterPage />} />
+            <Route path="jouer" element={<PlayPage />} />
+            <Route path="gains" element={<GainsPage />} />
+            <Route path="profil" element={<ProfilePage />} />
+            <Route path="oauth/callback" element={<OAuthCallbackPage />} />
+            <Route
+              path="reglement"
+              element={
+                <LegalPage title="Règlement">
+                  <p>
+                    Texte règlement placeholder — jeu-concours Thé Tip Top (projet
+                    étudiant fictif).
+                  </p>
+                </LegalPage>
+              }
+            />
+            <Route
+              path="cgu"
+              element={
+                <LegalPage title="CGU">
+                  <p>Conditions générales d’utilisation — placeholder.</p>
+                </LegalPage>
+              }
+            />
+            <Route
+              path="confidentialite"
+              element={
+                <LegalPage title="Confidentialité">
+                  <p>Politique de confidentialité RGPD — placeholder.</p>
+                </LegalPage>
+              }
+            />
+            <Route
+              path="mentions-legales"
+              element={
+                <LegalPage title="Mentions légales">
+                  <p>
+                    Mentions légales placeholder. Projet étudiant fictif — Furious
+                    Ducks / Thé Tip Top.
+                  </p>
+                </LegalPage>
+              }
+            />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   )
 }
-
-export default App

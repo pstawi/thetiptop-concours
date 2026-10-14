@@ -44,4 +44,24 @@ final class ApiException extends HttpException
     {
         return new self('OAUTH_MOCK_DISABLED', $message, 403);
     }
+
+    public static function codeInvalid(string $message = 'Code ticket invalide.'): self
+    {
+        return new self('CODE_INVALID', $message, 422);
+    }
+
+    public static function codeAlreadyUsed(string $message = 'Ce code a déjà été utilisé.'): self
+    {
+        return new self('CODE_ALREADY_USED', $message, 422);
+    }
+
+    public static function contestNotOpen(string $message = 'Le concours n\'est pas ouvert à la saisie de codes.'): self
+    {
+        return new self('CONTEST_NOT_OPEN', $message, 422);
+    }
+
+    public static function rateLimited(string $message = 'Trop de tentatives. Réessayez plus tard.'): self
+    {
+        return new self('RATE_LIMITED', $message, 429);
+    }
 }
