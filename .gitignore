@@ -54,3 +54,4 @@ postgres-data/
 *.key
 jwt/
 !jwt/.gitkeep
+!api/config/jwt/.gitkeep

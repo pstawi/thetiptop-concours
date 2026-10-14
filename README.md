@@ -154,6 +154,26 @@ Le CDC exécutable reste dans le dépôt pédagogique du mastère :
 
 Ce dépôt ne contient que le code de l’application.
 
+### 7. Auth JWT (étape 3)
+
+Endpoints :
+
+| Méthode | Chemin | Auth |
+| --- | --- | --- |
+| POST | `/api/v1/auth/register` | public |
+| POST | `/api/v1/auth/login` | public |
+| GET | `/api/v1/me` | Bearer JWT |
+| PATCH | `/api/v1/me` | Bearer JWT |
+
+Clés JWT : `api/config/jwt/*.pem` (non versionnées). Voir `api/.env.example`.
+
+Exemple login (PowerShell) :
+
+```powershell
+$body = @{ email = "user@thetiptop.local"; password = "User123!" } | ConvertTo-Json
+Invoke-RestMethod -Method Post -Uri http://127.0.0.1:8000/api/v1/auth/login -ContentType "application/json" -Body $body
+```
+
 ## Statut
 
-Étape 2 — modèle de données Doctrine, migration, CLI `app:seed-contest` (500k codes + intégrité %).
+Étape 3 — auth JWT (register / login /me) + rôles USER / SHOP / ADMIN.
