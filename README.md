@@ -174,6 +174,28 @@ $body = @{ email = "user@thetiptop.local"; password = "User123!" } | ConvertTo-J
 Invoke-RestMethod -Method Post -Uri http://127.0.0.1:8000/api/v1/auth/login -ContentType "application/json" -Body $body
 ```
 
+### 8. OAuth Google / Facebook (étape 4)
+
+| Méthode | Chemin | Auth |
+| --- | --- | --- |
+| GET | `/api/v1/auth/oauth/{provider}` | public (`google` \| `facebook`) |
+| GET | `/api/v1/auth/oauth/{provider}/callback` | public |
+| POST | `/api/v1/auth/oauth/mock` | public si `OAUTH_MOCK=1` |
+
+- **Sans clés** + `OAUTH_MOCK=1` : utiliser le mock (recommandé en local)
+- **Avec clés** : redirection fournisseur puis callback → JWT (redirige vers `FRONT_URL/oauth/callback?token=…`)
+- Mock désactivé → erreur `OAUTH_MOCK_DISABLED` (403)
+
+```powershell
+$body = @{
+  provider = "google"
+  email = "oauth.mock@thetiptop.local"
+  firstName = "OAuth"
+  lastName = "Mock"
+} | ConvertTo-Json
+Invoke-RestMethod -Method Post -Uri http://127.0.0.1:8000/api/v1/auth/oauth/mock -ContentType "application/json" -Body $body
+```
+
 ## Statut
 
-Étape 3 — auth JWT (register / login /me) + rôles USER / SHOP / ADMIN.
+Étape 4 — OAuth Google/Facebook (réel si clés) + mock local.

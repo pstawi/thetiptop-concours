@@ -39,4 +39,9 @@ final class ApiException extends HttpException
     {
         return new self('NOT_FOUND', $message, 404);
     }
+
+    public static function oauthMockDisabled(string $message = 'Le mock OAuth est désactivé.'): self
+    {
+        return new self('OAUTH_MOCK_DISABLED', $message, 403);
+    }
 }

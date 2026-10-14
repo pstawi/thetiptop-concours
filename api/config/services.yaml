@@ -4,6 +4,8 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    front_url_default: 'http://127.0.0.1:5173'
+    oauth_mock_default: '1'
 
 services:
     # default configuration for services in *this* file
@@ -16,5 +18,13 @@ services:
     App\:
         resource: '../src/'
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    App\Service\OAuth\OAuthSettings:
+        arguments:
+            $appSecret: '%env(APP_SECRET)%'
+            $defaultUri: '%env(DEFAULT_URI)%'
+            $frontUrl: '%env(default:front_url_default:FRONT_URL)%'
+            $mockEnabled: '%env(bool:default:oauth_mock_default:OAUTH_MOCK)%'
+            $googleClientId: '%env(default::OAUTH_GOOGLE_CLIENT_ID)%'
+            $googleClientSecret: '%env(default::OAUTH_GOOGLE_CLIENT_SECRET)%'
+            $facebookClientId: '%env(default::OAUTH_FACEBOOK_CLIENT_ID)%'
+            $facebookClientSecret: '%env(default::OAUTH_FACEBOOK_CLIENT_SECRET)%'
