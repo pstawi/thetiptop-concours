@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Http\ApiException;
 use App\Repository\UserRepository;
+use App\Service\AppMailer;
 use App\Service\PasswordPolicy;
 use App\Service\UserResponseFactory;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,6 +25,7 @@ final class AuthController
         private readonly JWTTokenManagerInterface $jwtManager,
         private readonly UserResponseFactory $userResponseFactory,
         private readonly PasswordPolicy $passwordPolicy,
+        private readonly AppMailer $mailer,
     ) {
     }
 
@@ -66,6 +68,7 @@ final class AuthController
 
         $this->em->persist($user);
         $this->em->flush();
+        $this->mailer->sendWelcome($user);
 
         return new JsonResponse([
             'token' => $this->jwtManager->create($user),

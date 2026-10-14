@@ -74,4 +74,9 @@ final class ApiException extends HttpException
     {
         return new self('CONTEST_PHASE_INVALID', $message, 422);
     }
+
+    public static function drawAlreadyDone(string $message = 'Le tirage du gros lot a déjà été effectué.'): self
+    {
+        return new self('DRAW_ALREADY_DONE', $message, 409);
+    }
 }

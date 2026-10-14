@@ -32,6 +32,9 @@ final class ShopClaimService
             throw ApiException::validation('Paramètre q requis (email ou code ticket).');
         }
 
+        $results = [];
+
+        // Claims tickets (participation)
         $qb = $this->claims->createQueryBuilder('c')
             ->innerJoin('c.participation', 'p')
             ->innerJoin('p.user', 'u')
@@ -45,15 +48,34 @@ final class ShopClaimService
             $qb->andWhere('LOWER(u.email) = :email')
                 ->setParameter('email', strtolower($q));
         } else {
-            $code = strtoupper($q);
             $qb->andWhere('t.code = :code')
-                ->setParameter('code', $code);
+                ->setParameter('code', strtoupper($q));
         }
 
-        /** @var list<Claim> $rows */
-        $rows = $qb->getQuery()->getResult();
+        /** @var list<Claim> $ticketClaims */
+        $ticketClaims = $qb->getQuery()->getResult();
+        foreach ($ticketClaims as $claim) {
+            $results[] = $this->serialize($claim);
+        }
 
-        return array_map(fn (Claim $claim) => $this->serialize($claim), $rows);
+        // Claims gros lot (par email gagnant)
+        if (str_contains($q, '@')) {
+            $gpQb = $this->claims->createQueryBuilder('c')
+                ->innerJoin('c.grandPrizeDraw', 'd')
+                ->innerJoin('d.winner', 'w')
+                ->addSelect('d', 'w')
+                ->andWhere('LOWER(w.email) = :email')
+                ->setParameter('email', strtolower($q))
+                ->setMaxResults(10);
+
+            /** @var list<Claim> $gpClaims */
+            $gpClaims = $gpQb->getQuery()->getResult();
+            foreach ($gpClaims as $claim) {
+                $results[] = $this->serialize($claim);
+            }
+        }
+
+        return $results;
     }
 
     /**
@@ -133,12 +155,26 @@ final class ShopClaimService
     {
         $participation = $claim->getParticipation();
         if (!$participation) {
+            $winner = $claim->getGrandPrizeDraw()?->getWinner();
+
             return [
                 'id' => $claim->getId(),
                 'status' => $claim->getStatus()->value,
                 'channel' => $claim->getChannel()->value,
                 'type' => 'grand_prize',
+                'participant' => $winner ? [
+                    'email' => $winner->getEmail(),
+                    'firstName' => $winner->getFirstName(),
+                    'lastName' => $winner->getLastName(),
+                ] : null,
+                'prize' => [
+                    'code' => 'GRAND_360',
+                    'label' => 'Coffret d\'une valeur de 360 €',
+                ],
+                'code' => null,
+                'codeMasked' => null,
                 'deliveredAt' => $claim->getDeliveredAt()?->format(\DateTimeInterface::ATOM),
+                'deliveredBy' => $claim->getDeliveredBy()?->getEmail(),
             ];
         }
 

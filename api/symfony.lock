@@ -104,6 +104,18 @@
             "./.editorconfig"
         ]
     },
+    "symfony/mailer": {
+        "version": "7.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "4.3",
+            "ref": "710cae90ab3e5d3f4a747e9ce6ae33299d7ae83b"
+        },
+        "files": [
+            "./config/packages/mailer.yaml"
+        ]
+    },
     "symfony/maker-bundle": {
         "version": "1.67",
         "recipe": {
@@ -151,6 +163,19 @@
             "./config/routes/security.yaml"
         ]
     },
+    "symfony/twig-bundle": {
+        "version": "7.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "6.4",
+            "ref": "06dacf16872358cb1f2494e089070ff2d045233a"
+        },
+        "files": [
+            "./config/packages/twig.yaml",
+            "./templates/base.html.twig"
+        ]
+    },
     "symfony/validator": {
         "version": "7.3",
         "recipe": {
@@ -162,5 +187,8 @@
         "files": [
             "./config/packages/validator.yaml"
         ]
+    },
+    "twig/extra-bundle": {
+        "version": "v3.29.0"
     }
 }

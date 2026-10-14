@@ -5,6 +5,7 @@ namespace App\Service\OAuth;
 use App\Entity\User;
 use App\Http\ApiException;
 use App\Repository\UserRepository;
+use App\Service\AppMailer;
 use Doctrine\ORM\EntityManagerInterface;
 
 final class OAuthAccountService
@@ -12,6 +13,7 @@ final class OAuthAccountService
     public function __construct(
         private readonly UserRepository $users,
         private readonly EntityManagerInterface $em,
+        private readonly AppMailer $mailer,
     ) {
     }
 
@@ -40,7 +42,9 @@ final class OAuthAccountService
             $user = $this->users->findOneBy(['email' => $email]);
         }
 
+        $isNew = false;
         if (!$user) {
+            $isNew = true;
             $user = (new User())
                 ->setEmail($email)
                 ->setFirstName($profile['firstName'] !== '' ? $profile['firstName'] : 'Prénom')
@@ -62,6 +66,10 @@ final class OAuthAccountService
             ->setOauthSubject($subject);
 
         $this->em->flush();
+
+        if ($isNew) {
+            $this->mailer->sendWelcome($user);
+        }
 
         return $user;
     }

@@ -14,6 +14,9 @@ export default function Layout() {
           <NavLink to="/">Accueil</NavLink>
           {user ? (
             <>
+              {user.roles?.includes('ROLE_ADMIN') && (
+                <NavLink to="/admin">Admin</NavLink>
+              )}
               {user.roles?.includes('ROLE_SHOP') ? (
                 <NavLink to="/boutique">Boutique</NavLink>
               ) : (

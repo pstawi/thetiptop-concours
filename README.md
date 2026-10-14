@@ -229,6 +229,25 @@ npm run dev
 
 Remise autorisée en phases `OPEN` ou `CLAIM` uniquement. Front : `/boutique` (compte `shop@thetiptop.local` / `Shop123!`).
 
+### 11. Admin / emails / tirage (étape 7)
+
+| Méthode | Chemin | Auth |
+| --- | --- | --- |
+| GET | `/api/v1/admin/stats` | `ROLE_ADMIN` |
+| GET | `/api/v1/admin/exports/emails` | CSV opt-in |
+| PATCH | `/api/v1/admin/contest` | `{ "status": "OPEN" }` |
+| POST | `/api/v1/admin/draw/grand-prize` | après `CLOSED` |
+| GET | `/api/v1/admin/audit` | journal |
+
+Emails (Mailpit `MAILER_DSN=smtp://127.0.0.1:1025`) : `welcome`, `claim_reminder`, `grand_prize_winner`.  
+Sans SMTP joignable, les mails restent tracés en `email_outbox` avec statut `FAILED` (le flux métier continue).
+
+```powershell
+php bin/console app:emails:claim-reminders
+```
+
+Front : `/admin` — compte `admin@thetiptop.local` / `Admin123!`.
+
 ## Statut
 
-Étape 6 — espace boutique (recherche claim + deliver).
+Étape 7 — admin, emails transactionnels, tirage gros lot.

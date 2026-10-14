@@ -149,7 +149,8 @@
 .stack input[type="email"],
 .stack input[type="password"],
 .stack input[type="text"],
-.stack input:not([type]) {
+.stack input:not([type]),
+.stack select {
   padding: 0.55rem 0.65rem;
   border: 1px solid #a8b9ad;
   background: #fff;
