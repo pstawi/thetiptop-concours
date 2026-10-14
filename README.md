@@ -17,9 +17,12 @@ Application web du jeu-concours Thé Tip Top (Objectif 2 — Furious Ducks).
 ## Prérequis
 
 - PHP ≥ 8.2 + Composer
+- Extension PHP `pdo_pgsql` (WAMP : décommenter `extension=pdo_pgsql` et `extension=pgsql` dans `php.ini`)
+- PostgreSQL 16+ local **ou** Docker Desktop (Compose)
+- Ajouter `C:\Program Files\PostgreSQL\<version>\bin` au PATH (pour `libpq` / `psql`)
 - Node.js ≥ 20 + npm
-- Docker Desktop (Compose)
 - Symfony CLI (recommandé) : https://symfony.com/download
+- Mailpit (Docker) optionnel en local pour les emails — sinon plus tard
 
 ## Démarrage local (PowerShell)
 
@@ -87,6 +90,51 @@ npm run dev
 
 Ouvrir http://127.0.0.1:5173 — la page affiche l’état du healthcheck API.
 
+### 6. Migrations + seed concours
+
+Avec le service PHP Docker (recommandé sous Windows / WAMP sans `pdo_pgsql`) :
+
+```powershell
+docker compose -f docker\docker-compose.yml up -d postgres mailpit
+docker compose -f docker\docker-compose.yml build php
+docker compose -f docker\docker-compose.yml run --rm php php bin/console doctrine:migrations:migrate --no-interaction
+```
+
+Seed **500 000** codes (long : typiquement quelques minutes selon machine) :
+
+```powershell
+docker compose -f docker\docker-compose.yml run --rm php php bin/console app:seed-contest
+```
+
+Options :
+
+| Option | Effet |
+| --- | --- |
+| `--force` | Purge tickets / lots / état concours puis re-seed (**refusé si `APP_ENV=prod`**) |
+| `--tickets=1000` | Total réduit pour smoke-test local (répartition proportionnelle) |
+
+Si le seed a déjà tourné, relancer sans `--force` échoue volontairement.
+
+Comptes démo créés :
+
+| Email | Mot de passe | Rôle |
+| --- | --- | --- |
+| `admin@thetiptop.local` | `Admin123!` | `ROLE_ADMIN` |
+| `shop@thetiptop.local` | `Shop123!` | `ROLE_SHOP` |
+| `user@thetiptop.local` | `User123!` | `ROLE_USER` |
+
+Contrôle d’intégrité post-seed : total = cible et chaque `COUNT(prize_type) = stock_target` (échec sinon).
+
+**Temps d’exécution mesuré (local, 2026-10-14)** : seed **500 000** tickets en **~51 s** (PostgreSQL 18 natif Windows, PHP 8.2, batches de 2000 inserts). Le smoke-test `--tickets=1000` tourne en ~4 s. La commande affiche aussi la durée à chaque run.
+
+Sans Docker PHP (PHP hôte avec `pdo_pgsql`) :
+
+```powershell
+cd api
+php bin/console doctrine:migrations:migrate --no-interaction
+php bin/console app:seed-contest
+```
+
 ## Structure
 
 ```
@@ -108,4 +156,4 @@ Ce dépôt ne contient que le code de l’application.
 
 ## Statut
 
-Étape 1 — socle local (API health, CORS, Docker postgres/mailpit, front Vite).
+Étape 2 — modèle de données Doctrine, migration, CLI `app:seed-contest` (500k codes + intégrité %).
