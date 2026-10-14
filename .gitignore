@@ -17,6 +17,7 @@ Thumbs.db
 .cursorrules
 .cursorignore
 AGENTS.md
+PROMPT_AGENT.md
 .claude/
 .github/copilot-instructions.md
 
