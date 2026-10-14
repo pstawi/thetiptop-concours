@@ -220,6 +220,15 @@ cd web
 npm run dev
 ```
 
+### 10. Espace boutique (étape 6)
+
+| Méthode | Chemin | Auth |
+| --- | --- | --- |
+| GET | `/api/v1/shop/claims?q=` | `ROLE_SHOP` (email ou code) |
+| POST | `/api/v1/shop/claims/{id}/deliver` | `ROLE_SHOP` |
+
+Remise autorisée en phases `OPEN` ou `CLAIM` uniquement. Front : `/boutique` (compte `shop@thetiptop.local` / `Shop123!`).
+
 ## Statut
 
-Étape 5 — concours participant (contest, redeem, historique) + front.
+Étape 6 — espace boutique (recherche claim + deliver).

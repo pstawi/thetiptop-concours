@@ -64,4 +64,14 @@ final class ApiException extends HttpException
     {
         return new self('RATE_LIMITED', $message, 429);
     }
+
+    public static function claimNotPending(string $message = 'Ce gain n\'est plus en attente de remise.'): self
+    {
+        return new self('CLAIM_NOT_PENDING', $message, 422);
+    }
+
+    public static function contestPhaseInvalid(string $message = 'Action impossible dans la phase actuelle du concours.'): self
+    {
+        return new self('CONTEST_PHASE_INVALID', $message, 422);
+    }
 }

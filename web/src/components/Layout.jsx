@@ -14,8 +14,14 @@ export default function Layout() {
           <NavLink to="/">Accueil</NavLink>
           {user ? (
             <>
-              <NavLink to="/jouer">Jouer</NavLink>
-              <NavLink to="/gains">Mes gains</NavLink>
+              {user.roles?.includes('ROLE_SHOP') ? (
+                <NavLink to="/boutique">Boutique</NavLink>
+              ) : (
+                <>
+                  <NavLink to="/jouer">Jouer</NavLink>
+                  <NavLink to="/gains">Mes gains</NavLink>
+                </>
+              )}
               <NavLink to="/profil">Profil</NavLink>
               <button type="button" className="linkish" onClick={logout}>
                 Déconnexion

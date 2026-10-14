@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './AuthContext'
 import Layout from './components/Layout'
+import BoutiquePage from './pages/BoutiquePage'
 import GainsPage from './pages/GainsPage'
 import HomePage from './pages/HomePage'
 import LegalPage from './pages/LegalPage'
@@ -23,6 +24,7 @@ export default function App() {
             <Route path="jouer" element={<PlayPage />} />
             <Route path="gains" element={<GainsPage />} />
             <Route path="profil" element={<ProfilePage />} />
+            <Route path="boutique" element={<BoutiquePage />} />
             <Route path="oauth/callback" element={<OAuthCallbackPage />} />
             <Route
               path="reglement"
